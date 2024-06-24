@@ -18,6 +18,7 @@ export default function setupServer() {
 
   app.use(cors());
   app.use(logger);
+  app.use(express.json());
 
   app.use((req, res, next) => {
     console.log(`Time: ${new Date().toLocaleString()}`);
