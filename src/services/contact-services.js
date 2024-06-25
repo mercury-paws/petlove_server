@@ -16,7 +16,7 @@ export const upsertContact = async (filter, data, options = {}) => {
   if (!result || !result.value) return null;
 
   return {
-    data: result.value,
+    result,
     isNew: Boolean(result?.lastErrorObject?.upserted),
   };
 };

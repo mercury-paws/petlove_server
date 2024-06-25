@@ -11,8 +11,8 @@ export const getAllContactsController = async (req, res, next) => {
   const data = await getContacts();
   res.json({
     status: 200,
-    data,
     message: 'Successfully found contacts',
+    data,
   });
 };
 
@@ -25,8 +25,8 @@ export const getContactByIdController = async (req, res, next) => {
   }
   res.json({
     status: 200,
-    data,
     message: `Successfully found contact with id ${id}`,
+    data,
   });
 };
 
@@ -48,16 +48,18 @@ export const patchContactController = async (req, res) => {
   }
   res.json({
     status: 200,
-    data,
     message: 'Successfully patched a contact!',
+    data: data.result.value,
   });
 };
 
 export const deleteController = async (req, res) => {
   const { id } = req.params;
   const data = await deleteContact({ _id: id });
+
   if (!data) {
     throw createHttpError(404, 'Contact not found');
   }
-  res.status(204);
+
+  res.status(204).end();
 };
