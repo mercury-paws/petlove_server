@@ -25,7 +25,7 @@ export default function setupServer() {
     next();
   });
 
-  app.use('/api/contacts', contactsRouter);
+  app.use('/contacts', contactsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
