@@ -6,6 +6,7 @@ import {
   upsertContact,
   deleteContact,
 } from '../services/contact-services.js';
+import { contactAddSchema } from '../validation/contact-schema.js';
 
 export const getAllContactsController = async (req, res, next) => {
   const data = await getContacts();
