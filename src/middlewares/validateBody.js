@@ -1,5 +1,4 @@
 import createHttpError from 'http-errors';
-import Joi from 'joi';
 
 export const validateBody = (schema) => {
   const func = async (req, res, next) => {

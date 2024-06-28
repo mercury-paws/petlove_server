@@ -13,18 +13,25 @@ export const contactAddSchema = Joi.object({
     'any.required': 'Username is required',
   }),
   phoneNumber: Joi.string().pattern(phoneNumberRegexp).required().messages({
-    'string.base': 'Email should be of the following format: xxx-xxx-xxxx',
+    'string.pattern.base':
+      'Phone number should be of the following format: xxx-xxx-xxxx',
+    'any.required': 'Phone number is required',
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
-    'string.base': 'Email should be of the following format: name@example.com',
+    'string.pattern.base':
+      'Email should be of the following format: name@example.com',
+    'any.required': 'Email is required',
   }),
   contactType: Joi.string()
     .valid(...typeList)
     .required()
     .messages({
-      'string.base':
-        'type can be only the following: "work", "home", "personal"',
+      'string.base': 'Contact type must be a string',
+      'any.only':
+        'Contact type can only be one of the following: "work", "home", "personal"',
+      'any.required': 'Contact type is required',
     }),
+  isFavourite: Joi.boolean(),
 });
 
 export const contactUpdateSchema = Joi.object({
@@ -32,4 +39,5 @@ export const contactUpdateSchema = Joi.object({
   phoneNumber: Joi.string().pattern(phoneNumberRegexp),
   email: Joi.string().pattern(emailRegexp),
   contactType: Joi.string().valid(...typeList),
+  isFavourite: Joi.boolean(),
 });
