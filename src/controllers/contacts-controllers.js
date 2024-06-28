@@ -53,6 +53,18 @@ export const addContactController = async (req, res) => {
   });
 };
 
+export const putContactController = async (req, res) => {
+  const { id } = req.params;
+  const data = await upsertContact({ _id: id }, req.body, { upsert: true });
+  const status = data.isNew ? 201 : 200;
+  const message = data.isNew ? 'Successfully added Contact' : 'Contact updated';
+  res.json({
+    status,
+    message,
+    data: data.value,
+  });
+};
+
 export const patchContactController = async (req, res) => {
   const { id } = req.params;
   const data = await upsertContact({ _id: id }, req.body);

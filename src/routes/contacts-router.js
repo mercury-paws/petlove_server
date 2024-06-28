@@ -3,6 +3,7 @@ import {
   getAllContactsController,
   getContactByIdController,
   addContactController,
+  putContactController,
   patchContactController,
   deleteController,
 } from '../controllers/contacts-controllers.js';
@@ -22,6 +23,8 @@ contactsRouter.post(
   validateBody(contactAddSchema),
   ctrlWrapper(addContactController),
 );
+contactsRouter.put('/:id', isValidId, ctrlWrapper(putContactController));
+
 contactsRouter.patch(
   '/:id',
   isValidId,
