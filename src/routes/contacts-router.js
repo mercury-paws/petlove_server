@@ -14,8 +14,11 @@ import {
   contactAddSchema,
   contactUpdateSchema,
 } from '../validation/contact-schema.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
 contactsRouter.get('/', ctrlWrapper(getAllContactsController));
 contactsRouter.get('/:id', isValidId, ctrlWrapper(getContactByIdController));
 contactsRouter.post(

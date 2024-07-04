@@ -35,7 +35,6 @@ export const signinController = async (req, res) => {
     throw createHttpError(401, 'Password is invalid');
   }
   const session = await createSession(user._id);
-
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: session.refreshTokenValidUntil,
