@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { signup, findUser } from '../services/auth-services.js';
-import { userSignupSchema } from '../validation/user-schema.js';
 import { compareHash } from '../utils/hash.js';
+import { createSession } from '../services/session-services.js';
 
 export const signupController = async (req, res) => {
   const { email } = req.body;
@@ -25,6 +25,7 @@ export const signupController = async (req, res) => {
 
 export const signinController = async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
   const user = await findUser({ email });
   if (!user) {
     throw createHttpError(404, 'Email not found');
@@ -33,12 +34,23 @@ export const signinController = async (req, res) => {
   if (!passwordCompare) {
     throw createHttpError(401, 'Password is invalid');
   }
+  const session = await createSession(user._id);
 
-  const accessToken = '123.123.123';
-  const refreshToken = '456.456.456';
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
 
-  return {
-    accessToken,
-    refreshToken,
-  };
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully signed in',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 };

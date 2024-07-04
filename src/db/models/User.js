@@ -19,7 +19,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       minLength: [6, 'Must be at least 6, got {VALUE}'],
-      maxLength: 20,
       required: [true, 'Password is required'],
       unique: true,
     },
