@@ -7,19 +7,21 @@ export const getContacts = async ({
   perPage,
   sortBy = sortByConstants[0],
   sortOrder = sortOrderConstants[0],
-  type,
-  isFavourite,
+  filter,
 }) => {
   const skip = (page - 1) * perPage;
 
   const databaseQuery = Contact.find();
 
-  if (type) {
-    databaseQuery.where('contactType').equals(type);
+  if (filter.userId) {
+    databaseQuery.where('userId').equals(filter.userId);
+  }
+  if (filter.type) {
+    databaseQuery.where('contactType').equals(filter.type);
   }
 
-  if (isFavourite) {
-    databaseQuery.where('isFavourite').equals(isFavourite);
+  if (filter.isFavourite) {
+    databaseQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
   const items = await databaseQuery
@@ -46,7 +48,7 @@ export const getContacts = async ({
   };
 };
 
-export const getContactById = (id) => Contact.findById(id);
+export const getContactById = (filter) => Contact.findOne(filter);
 
 export const addContact = (data) => Contact.create(data);
 
