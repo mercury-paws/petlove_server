@@ -1,7 +1,26 @@
 import createHttpError from 'http-errors';
 import { signup, findUser } from '../services/auth-services.js';
 import { compareHash } from '../utils/hash.js';
-import { createSession } from '../services/session-services.js';
+import {
+  createSession,
+  findSession,
+  deleteSession,
+} from '../services/session-services.js';
+
+const setupResponseSession = (
+  res,
+  { refreshToken, refreshTokenValidUntil, _id },
+) => {
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+
+  res.cookie('sessionId', _id, {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  });
+};
 
 export const signupController = async (req, res) => {
   const { email } = req.body;
@@ -35,15 +54,8 @@ export const signinController = async (req, res) => {
     throw createHttpError(401, 'Password is invalid');
   }
   const session = await createSession(user._id);
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: session.refreshTokenValidUntil,
-  });
 
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: session.refreshTokenValidUntil,
-  });
+  setupResponseSession(res, session);
 
   res.json({
     status: 200,
@@ -52,4 +64,43 @@ export const signinController = async (req, res) => {
       accessToken: session.accessToken,
     },
   });
+};
+
+export const refreshController = async (req, res) => {
+  const { refreshToken, sessionId } = req.cookies;
+  const currentSession = await findSession({ refreshToken, _id: sessionId });
+  if (!currentSession) {
+    throw createHttpError(401, 'Session not found');
+  }
+  const refreshTokenExpired =
+    new Date() > new Date(currentSession.refreshTokenValidUntil);
+
+  if (refreshTokenExpired) {
+    throw createHttpError(401, 'Session expired');
+  }
+
+  const newSession = await createSession(currentSession.userId);
+
+  setupResponseSession(res, newSession);
+
+  res.json({
+    status: 200,
+    message: 'Successfully signed in',
+    data: {
+      accessToken: newSession.accessToken,
+    },
+  });
+};
+
+export const signoutController = async (req, res) => {
+  const { sessionId } = req.cookies;
+  if (!sessionId) {
+    throw createHttpError(401, 'Session not found');
+  }
+  await deleteSession({ _id: sessionId });
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
 };

@@ -12,8 +12,10 @@ export const createSession = async (userId) => {
 
   const accessToken = randomBytes(30).toString('base64');
   const refreshToken = randomBytes(30).toString('base64');
+
   const accessTokenValidUntil = new Date(Date.now() + ACCESS_TOKEN_LIFETIME);
   const refreshTokenValidUntil = new Date(Date.now() + REFRESH_TOKEN_LIFETIME);
+
   return Session.create({
     userId,
     accessToken,
@@ -22,3 +24,5 @@ export const createSession = async (userId) => {
     refreshTokenValidUntil,
   });
 };
+
+export const deleteSession = (filter) => Session.deleteOne(filter);
