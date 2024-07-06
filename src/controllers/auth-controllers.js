@@ -59,7 +59,7 @@ export const signinController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully signed in',
+    message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
     },
@@ -85,7 +85,7 @@ export const refreshController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully signed in',
+    message: 'Successfully refreshed a session!',
     data: {
       accessToken: newSession.accessToken,
     },
