@@ -22,6 +22,11 @@ const userSchema = new Schema(
       required: [true, 'Password is required'],
       unique: true,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
     timestamps: true,

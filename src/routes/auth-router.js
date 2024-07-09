@@ -10,6 +10,7 @@ import {
   signinController,
   refreshController,
   signoutController,
+  verifyController,
 } from '../controllers/auth-controllers.js';
 
 const authRouter = Router();
@@ -28,5 +29,5 @@ authRouter.post(
 authRouter.post('/refresh', ctrlWrapper(refreshController));
 
 authRouter.post('/logout', ctrlWrapper(signoutController));
-
+authRouter.get('/verify', ctrlWrapper(verifyController));
 export default authRouter;
