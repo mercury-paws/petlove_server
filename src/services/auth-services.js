@@ -12,4 +12,9 @@ export const signup = async (data) => {
 
 export const updateUser = (filter, data) => User.findOneAndUpdate(filter, data);
 
+export const updatePassword = async (filter, data) => {
+  const { password } = data;
+  const hashPassword = await hashValue(password);
+  return User.findOneAndUpdate(filter, { password: hashPassword });
+};
 // export const resetEmail = (filter, data) => User.findOneAndUpdate(filter, data);
