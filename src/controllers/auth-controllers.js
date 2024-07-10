@@ -103,31 +103,6 @@ export const verifyController = async (req, res) => {
     throw createHttpError(401, error.message);
   }
 };
-export const verifyResetPasswordController = async (req, res) => {
-  const { token, password } = req.body;
-
-  try {
-    const verifiedTokenq = jwt.verify(token, jwt_secret);
-    const { id, email } = verifiedTokenq;
-    const user = await findUser({ _id: id, email });
-    if (!user) {
-      throw createHttpError(404, 'User not found');
-    }
-    if (!token || !verifiedTokenq) {
-      throw createHttpError(401, 'Token is expired or invalid.');
-    }
-
-    await updatePassword({ _id: id }, { password: password });
-
-    res.json({
-      status: 200,
-      message: 'Password has been successfully reset.',
-      data: {},
-    });
-  } catch (error) {
-    throw createHttpError(401, error.message);
-  }
-};
 
 export const signinController = async (req, res) => {
   const { email, password } = req.body;
@@ -243,5 +218,35 @@ export const requestResetEmailController = async (req, res) => {
       500,
       'Failed to send the email, please try again later.',
     );
+  }
+};
+
+export const verifyResetPasswordController = async (req, res) => {
+  const { token, password } = req.body;
+
+  try {
+    const verifiedTokenq = jwt.verify(token, jwt_secret);
+    const { id, email } = verifiedTokenq;
+    const user = await findUser({ _id: id, email });
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+    if (!token || !verifiedTokenq) {
+      throw createHttpError(401, 'Token is expired or invalid.');
+    }
+
+    const passwordCompare = await compareHash(password, user.password);
+    if (passwordCompare) {
+      throw createHttpError(401, 'Password is in use');
+    }
+    await updatePassword({ _id: id }, { password: password });
+
+    res.json({
+      status: 200,
+      message: 'Password has been successfully reset.',
+      data: {},
+    });
+  } catch (error) {
+    throw createHttpError(401, error.message);
   }
 };
