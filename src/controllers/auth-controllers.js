@@ -6,7 +6,8 @@ import {
   findSession,
   deleteSession,
 } from '../services/session-services.js';
-import sendEmailtoConfirm from '../utils/sendEmail.js';
+import sendEmailtoConfirm from '../utils/sendEmailToConfirm.js';
+import sendEmailtoReset from '../utils/sendEmail.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
 import { TEMPLATES_DIR } from '../constants/index.js';
@@ -17,6 +18,7 @@ import path from 'node:path';
 const app_domain = env('APP_DOMAIN', 'http://localhost:3000');
 const jwt_secret = env('JWT_SECRET');
 const verifyEmailPath = path.join(TEMPLATES_DIR, 'verify-email.html');
+const resetEmailPath = path.join(TEMPLATES_DIR, 'reset-password-email.html');
 
 const setupResponseSession = (
   res,
@@ -50,6 +52,7 @@ export const signupController = async (req, res) => {
   const token = jwt.sign(payload, jwt_secret);
   const emailTemplateSource = await fs.readFile(verifyEmailPath, 'utf-8');
   const emailTemplate = handlebars.compile(emailTemplateSource);
+
   const html = emailTemplate({
     user_name: newUser.name,
     app_domain,
@@ -163,4 +166,44 @@ export const signoutController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const requestResetEmailController = async (req, res) => {
+  const { email } = req.body;
+  const user = await findUser({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  const payload = {
+    id: user._id,
+    email,
+  };
+
+  const resetToken = jwt.sign(payload, jwt_secret, {
+    expiresIn: '15m',
+  });
+
+  const emailTemplateSource = await fs.readFile(resetEmailPath, 'utf-8');
+  const emailTemplate = handlebars.compile(emailTemplateSource);
+
+  const html = emailTemplate({
+    user_name: user.name,
+    app_domain,
+    resetToken,
+  });
+
+  const resetEmail = {
+    subject: 'Reset your password',
+    to: email,
+    html,
+    //`<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+  };
+
+  await sendEmailtoReset(resetEmail);
+
+  res.json({
+    message: 'Reset password email was successfully sent!',
+    status: 200,
+    data: {},
+  });
 };

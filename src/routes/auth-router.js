@@ -4,6 +4,7 @@ import validateBody from '../middlewares/validateBody.js';
 import {
   userSigninSchema,
   userSignupSchema,
+  requestResetEmailSchema,
 } from '../validation/user-schema.js';
 import {
   signupController,
@@ -11,6 +12,7 @@ import {
   refreshController,
   signoutController,
   verifyController,
+  requestResetEmailController,
 } from '../controllers/auth-controllers.js';
 
 const authRouter = Router();
@@ -30,4 +32,11 @@ authRouter.post('/refresh', ctrlWrapper(refreshController));
 
 authRouter.post('/logout', ctrlWrapper(signoutController));
 authRouter.get('/verify', ctrlWrapper(verifyController));
+
+authRouter.post(
+  '/request-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+
 export default authRouter;
