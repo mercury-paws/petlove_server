@@ -103,7 +103,7 @@ export const patchContactController = async (req, res) => {
       photo = await saveFileToPublicDir(req.file, 'photo');
     }
   }
-  const data = await upsertContact({ _id: id, userId }, req.body, { photo });
+  const data = await upsertContact({ _id: id, userId }, req.body, photo);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
