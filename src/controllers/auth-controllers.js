@@ -15,7 +15,7 @@ import sendEmailtoConfirm from '../utils/sendEmailToConfirm.js';
 import sendEmailtoReset from '../utils/sendEmail.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
-import { TEMPLATES_DIR } from '../constants/index.js';
+import { TEMPLATES_DIR } from '../constants/path.js';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import path from 'node:path';

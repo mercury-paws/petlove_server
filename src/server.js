@@ -6,6 +6,7 @@ import router from './routes/index.js';
 import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+import { PUBLIC_DIR } from './constants/path.js';
 
 const PORT = Number(env('PORT', '3000'));
 export default function setupServer() {
@@ -21,6 +22,7 @@ export default function setupServer() {
   app.use(logger);
   app.use(cookieParser());
   app.use(express.json());
+  app.use(express.static(PUBLIC_DIR));
 
   app.use((req, res, next) => {
     console.log(`Time: ${new Date().toLocaleString()}`);
