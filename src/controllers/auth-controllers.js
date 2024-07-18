@@ -11,7 +11,7 @@ import {
   findSession,
   deleteSession,
 } from '../services/session-services.js';
-import sendEmailtoConfirm from '../utils/sendEmailToConfirm.js';
+// import sendEmailtoConfirm from '../utils/sendEmailToConfirm.js';
 import sendEmailtoReset from '../utils/sendEmail.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
@@ -22,7 +22,7 @@ import path from 'node:path';
 
 const app_domain = env('APP_DOMAIN', 'http://localhost:3000');
 const jwt_secret = env('JWT_SECRET');
-const verifyEmailPath = path.join(TEMPLATES_DIR, 'verify-email.html');
+// const verifyEmailPath = path.join(TEMPLATES_DIR, 'verify-email.html');
 const resetEmailPath = path.join(TEMPLATES_DIR, 'reset-password-email.html');
 
 const setupResponseSession = (
@@ -49,29 +49,29 @@ export const signupController = async (req, res) => {
   const newUser = await signup(req.body);
   console.log(req.body);
 
-  const payload = {
-    id: newUser._id,
-    email,
-  };
+  // const payload = {
+  //   id: newUser._id,
+  //   email,
+  // };
 
-  const token = jwt.sign(payload, jwt_secret);
-  const emailTemplateSource = await fs.readFile(verifyEmailPath, 'utf-8');
-  const emailTemplate = handlebars.compile(emailTemplateSource);
+  // const token = jwt.sign(payload, jwt_secret);
+  // const emailTemplateSource = await fs.readFile(verifyEmailPath, 'utf-8');
+  // const emailTemplate = handlebars.compile(emailTemplateSource);
 
-  const html = emailTemplate({
-    user_name: newUser.name,
-    app_domain,
-    token,
-  });
+  // const html = emailTemplate({
+  //   user_name: newUser.name,
+  //   app_domain,
+  //   token,
+  // });
 
-  const verifyEmail = {
-    subject: 'Verify Email',
-    to: email,
-    html,
+  // const verifyEmail = {
+  //   subject: 'Verify Email',
+  //   to: email,
+  //   html,
     //`<a target="_blank" href="${app_domain}/auth/verify?token=${token}">Click to verify your email</a>`,
-  };
+  // };
 
-  await sendEmailtoConfirm(verifyEmail);
+  // await sendEmailtoConfirm(verifyEmail);
 
   const data = {
     name: newUser.name,
