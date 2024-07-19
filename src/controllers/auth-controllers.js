@@ -68,7 +68,7 @@ export const signupController = async (req, res) => {
   //   subject: 'Verify Email',
   //   to: email,
   //   html,
-    //`<a target="_blank" href="${app_domain}/auth/verify?token=${token}">Click to verify your email</a>`,
+  //`<a target="_blank" href="${app_domain}/auth/verify?token=${token}">Click to verify your email</a>`,
   // };
 
   // await sendEmailtoConfirm(verifyEmail);
@@ -113,9 +113,9 @@ export const signinController = async (req, res) => {
     throw createHttpError(404, 'Email not found');
   }
 
-  if (!user.verify) {
-    throw createHttpError(401, 'Email not verified');
-  }
+  // if (!user.verify) {
+  //   throw createHttpError(401, 'Email not verified');
+  // }
 
   const passwordCompare = await compareHash(password, user.password);
   if (!passwordCompare) {
