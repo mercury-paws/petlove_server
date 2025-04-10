@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { PUBLIC_DIR } from './constants/path.js';
+const { graphqlHTTP } = require('express-graphql');
+import schema from './schemas/Schema.js';
 
 const PORT = Number(env('PORT', '3000'));
 export default function setupServer() {
@@ -33,6 +35,11 @@ export default function setupServer() {
   app.use(notFoundHandler);
   app.use(errorHandler);
 
+  app.use('/graphql', graphqlHTTP({
+  schema,
+  graphiql: true,
+  }));
+  
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

@@ -1,40 +1,49 @@
-import { Schema, model } from 'mongoose';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../initMySQLConnection';
+import { mySQLSaveError, setUpdateSettings } from './hooks';
+import User from './User';
 
-import { mongooseSaveError, setUpdateSettings } from './hooks.js';
-
-const sessionSchema = new Schema(
-  {
+const Session = sequelize.define('Session', {
     userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'user',
-      required: true,
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
     },
+    onDelete: 'CASCADE', // If the user is deleted, delete all associated sessions
+  },
     accessToken: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+    allowNull: false,
     },
     refreshToken: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+    allowNull: false,
     },
     accessTokenValidUntil: {
-      type: Date,
-      required: true,
+      type: DataTypes.DATE,
+    allowNull: false,
     },
     refreshTokenValidUntil: {
-      type: Date,
-      required: true,
+      type: DataTypes.DATE,
+    allowNull: false,
     },
   },
   {
-    versionKey: false,
     timestamps: true,
+    updatedAt: 'updatedAt',
+    createdAt: 'createdAt',
+    tableName: 'Sessions',
   },
 );
 
-sessionSchema.post('save', mongooseSaveError);
-sessionSchema.pre('findOneAndUpdate', setUpdateSettings);
-sessionSchema.post('findOneAndUpdate', mongooseSaveError);
+Session.addHook('afterCreate', mySQLSaveError);
+Session.addHook('beforeUpdate', setUpdateSettings);
 
-const Session = model('session', sessionSchema);
+Session.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',  // Alias to access user from session
+});
+
 export default Session;

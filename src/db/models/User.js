@@ -1,42 +1,63 @@
-import { Schema, model } from 'mongoose';
-import { validateEmail } from '../../constants/contacts-constants.js';
-import { mongooseSaveError, setUpdateSettings } from './hooks.js';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../initMySQLConnection';
+import { mySQLSaveError, setUpdateSettings } from './hooks';
+import Pet from './Pet';
 
-const userSchema = new Schema(
-  {
-    name: {
-      type: String,
-      minLength: [3, 'Must be at least 3, got {VALUE}'],
-      maxLength: 20,
-      required: [true, 'User name  required'],
-    },
-    email: {
-      type: String,
-      required: true,
-      validate: validateEmail,
-      unique: true,
-    },
-    password: {
-      type: String,
-      minLength: [6, 'Must be at least 6, got {VALUE}'],
-      required: [true, 'Password is required'],
-      unique: true,
-    },
-    verify: {
-      type: Boolean,
-      default: false,
-      required: true,
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
+    type: DataTypes.STRING(20), 
+    allowNull: false,
+    validate: {
+      len: {
+        args: [3, 20],
+        msg: 'Must be between 3 and 20 characters',
+      },
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: {
+        msg: 'Must be a valid email address',
+      },
+    },
   },
-);
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      len: {
+        args: [6],
+        msg: 'Password must be at least 6 characters long',
+      },
+    },
+  },
+  verify: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+}, {
+  timestamps: true,
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt',
+  tableName: 'User',
+});
 
-userSchema.post('save', mongooseSaveError);
-userSchema.pre('findOneAndUpdate', setUpdateSettings);
-userSchema.post('findOneAndUpdate', mongooseSaveError);
+User.addHook('afterCreate', mySQLSaveError);
+User.addHook('beforeUpdate', setUpdateSettings);
 
-const User = model('user', userSchema);
+User.hasMany(Pet, {
+  foreignKey: 'userId',
+  as: 'pets',
+});
+
 export default User;
