@@ -13,10 +13,10 @@ const initMySQLConnection = async () => {
       sequelize = new Sequelize(name, user, password, {
       host: host,
       dialect: 'mysql',
-      logging: false, // optional
+      logging: false, 
     });
 
-    await sequelize.authenticate();
+    await sequelize.authenticate(); //tries to connect to your database immediately, no lazy loading
     console.log('✅ MySQL connection successfully established!');
   } catch (error) {
     console.log(`Error connecting to database ${error}`);

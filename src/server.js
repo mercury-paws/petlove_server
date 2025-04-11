@@ -2,7 +2,6 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
-import router from './routes/index.js';
 import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -30,15 +29,15 @@ export default function setupServer() {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
   });
-  app.use(router);
-
-  app.use(notFoundHandler);
-  app.use(errorHandler);
 
   app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true,
   }));
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
   
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

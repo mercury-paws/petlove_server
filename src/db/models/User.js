@@ -3,7 +3,7 @@ import { sequelize } from '../initMySQLConnection';
 import { mySQLSaveError, setUpdateSettings } from './hooks';
 import Pet from './Pet';
 
-const User = sequelize.define('User', {
+const User = sequelize.define('Users', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -32,7 +32,6 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       len: {
         args: [6],
@@ -49,7 +48,7 @@ const User = sequelize.define('User', {
   timestamps: true,
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  tableName: 'User',
+  tableName: 'Users',
 });
 
 User.addHook('afterCreate', mySQLSaveError);
@@ -59,5 +58,6 @@ User.hasMany(Pet, {
   foreignKey: 'userId',
   as: 'pets',
 });
+
 
 export default User;

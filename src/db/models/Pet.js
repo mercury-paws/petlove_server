@@ -4,7 +4,7 @@ import { mySQLSaveError, setUpdateSettings } from './hooks';
 import User from './User';
 
 
-const Pet = sequelize.define('Pet', {
+const Pet = sequelize.define('Pets', {
    id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -31,31 +31,28 @@ const Pet = sequelize.define('Pet', {
     },
   },
   category: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM("Sell", "Free", "Lost", "Found"),
         allowNull: false,
         validate: {
         len: {
-        args: ["Sell", "Free", "Lost", "Found"],
         msg: 'Must be either "Sell", "Free", "Lost", "Found"',
       },
     },
   },
   sex: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM("Unknown", "Female", "Male"),
         allowNull: false,
         validate: {
         len: {
-        args: ["Unknown", "Female", "Male"],
         msg: 'Must be either "Unknown", "Female", "Male"',
       },
     },
   },
   species: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.ENUM("Dog", "Cat", "Monkey", "Bird", "Snake", "Turtle"),
         allowNull: false,
         validate: {
         len: {
-        args: ["Dog", "Cat", "Monkey", "Bird", "Snake", "Turtle"],
         msg: 'Must be either "Dog", "Cat", "Monkey", "Bird", "Snake", "Turtle"',
       },
     },
@@ -73,15 +70,12 @@ const Pet = sequelize.define('Pet', {
   birthday: {
       type: DataTypes.DATE,
         allowNull: false,
-        validate: {
-        len: {
-        args: [3, 70],
-        msg: 'Must be between 3 and 70 characters',
+    validate: { 
+        isDate: { msg: 'Must be a valid date' },
       },
     },
-  },
 starNumber: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
         len: {
@@ -118,7 +112,7 @@ starNumber: {
     timestamps: true,
     updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  tableName: 'Pet',
+  tableName: 'Pets',
   },
 );
 
@@ -127,7 +121,7 @@ Pet.addHook('beforeUpdate', setUpdateSettings);
 
 Pet.belongsTo(User, {
   foreignKey: 'userId', 
-  targetKey: 'id',
+  as: 'users',
 });
 
 export default Pet;
