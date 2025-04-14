@@ -6,11 +6,10 @@ import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { PUBLIC_DIR } from './constants/path.js';
-const { graphqlHTTP } = require('express-graphql');
-import schema from './schemas/Schema.js';
+import { graphqlHTTP } from 'express-graphql';
 
 const PORT = Number(env('PORT', '3000'));
-export default function setupServer() {
+export default async function setupServer() {
   const app = express();
 
   const logger = pino({
@@ -30,10 +29,14 @@ export default function setupServer() {
     next();
   });
 
+  const { default: schema } = await import('./schemas/Schema.js');
+
   app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true,
   }));
+
+ 
 
   app.use(notFoundHandler);
   app.use(errorHandler);

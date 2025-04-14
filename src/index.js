@@ -1,14 +1,18 @@
-import initMySQLConnection from './db/initMySQLConnection.js';
+import {initMySQLConnection} from './db/initMySQLConnection.js';
 import setupServer from './server.js';
-import createDirIfNotExists from './utils/createDirIfNotExists.js';
-import { TEMP_UPLOAD_DIR, PUBLIC_DIR, PHOTO_DIR } from './constants/path.js';
+// import { setUpAssociations } from './db/models/associations.js';
+// import createDirIfNotExists from './utils/createDirIfNotExists.js';
+// import { TEMP_UPLOAD_DIR, PUBLIC_DIR, PHOTO_DIR } from './constants/path.js';
+
 
 const bootstrap = async () => {
-  await initMySQLConnection();
-  await createDirIfNotExists(TEMP_UPLOAD_DIR);
-  await createDirIfNotExists(PUBLIC_DIR);
-  await createDirIfNotExists(PHOTO_DIR);
-  setupServer();
+  try {
+    await initMySQLConnection();
+ 
+    await setupServer();
+  } catch (error) {
+    console.error('Error during bootstrap:', error);
+  }
 };
 
 bootstrap();

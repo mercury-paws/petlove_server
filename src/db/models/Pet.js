@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../initMySQLConnection';
-import { mySQLSaveError, setUpdateSettings } from './hooks';
-import User from './User';
+import { sequelize } from '../initMySQLConnection.js';
+import { mySQLSaveError, setUpdateSettings } from './hooks.js';
 
+// const sequelize = getSequelize();
 
 const Pet = sequelize.define('Pets', {
    id: {
@@ -119,9 +119,6 @@ starNumber: {
 Pet.addHook('afterCreate', mySQLSaveError);
 Pet.addHook('beforeUpdate', setUpdateSettings);
 
-Pet.belongsTo(User, {
-  foreignKey: 'userId', 
-  as: 'users',
-});
 
+  
 export default Pet;

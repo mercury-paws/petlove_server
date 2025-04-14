@@ -1,9 +1,8 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../initMySQLConnection';
-import { mySQLSaveError, setUpdateSettings } from './hooks';
-import Pet from './Pet';
+import { sequelize } from '../initMySQLConnection.js';
+import { mySQLSaveError, setUpdateSettings } from './hooks.js';
 
-const User = sequelize.define('Users', {
+const User = sequelize.define('users', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -48,16 +47,12 @@ const User = sequelize.define('Users', {
   timestamps: true,
   updatedAt: 'updatedAt',
   createdAt: 'createdAt',
-  tableName: 'Users',
+  tableName: 'users',
 });
 
 User.addHook('afterCreate', mySQLSaveError);
 User.addHook('beforeUpdate', setUpdateSettings);
 
-User.hasMany(Pet, {
-  foreignKey: 'userId',
-  as: 'pets',
-});
 
 
 export default User;

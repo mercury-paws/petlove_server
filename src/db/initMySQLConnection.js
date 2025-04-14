@@ -4,24 +4,27 @@ import { env } from '../utils/env.js';
 let sequelize;
 
 const initMySQLConnection = async () => {
-  try {
-    const user = env('DB_USER');
-    const password = env('DB_PASS');
-    const name = env('DB_NAME');
-    const host = env('DB_HOST');
 
-      sequelize = new Sequelize(name, user, password, {
-      host: host,
+  if (!sequelize) {
+    sequelize = new Sequelize({
+
       dialect: 'mysql',
-      logging: false, 
+      logging: false,
+      username: env('DB_USER'),
+      password: env('DB_PASS'),
+      database: env('DB_NAME'),
+      host: env('DB_HOST'),
     });
 
-    await sequelize.authenticate(); //tries to connect to your database immediately, no lazy loading
-    console.log('✅ MySQL connection successfully established!');
-  } catch (error) {
-    console.log(`Error connecting to database ${error}`);
-    throw error;
-  }
+    try {
+      await sequelize.authenticate();
+      console.log('✅ MySQL connection successfully established!', 'DB name:', process.env.DB_NAME);
+    } catch (error) {
+      console.log(`Error connecting to database ${error}`);
+      throw error;
+    }
+  };
 };
 
-export { initMySQLConnection, sequelize };
+
+export { initMySQLConnection, sequelize  };

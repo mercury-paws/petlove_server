@@ -1,12 +1,12 @@
-import userMutations from "./user-mutations";
-import petMutations from "./pet-mutations";
+import userMutations from "./user-mutations.js";
+import petMutations from "./pet-mutations.js";
 import { GraphQLObjectType } from 'graphql';
 
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        ...petMutations.getFields(),
-        ...userMutations.getFields(),
+        ...petMutations,
+        ...userMutations,
     }
 });
 

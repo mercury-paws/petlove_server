@@ -1,5 +1,5 @@
 // import { sortByConstants, sortOrderConstants } from '../constants/constants.js';
-import validatePetData from '../utils/validatePetData.js';
+import {validatePetData} from '../utils/validatePetData.js';
 
 // export const getContacts = async ({
 //   page,

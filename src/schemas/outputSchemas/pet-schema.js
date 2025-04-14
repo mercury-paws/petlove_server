@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLInt, GraphQLBoolean } from 'graphql';
-import { UserSchema } from './user-schema';
+import { UserSchema } from './user-schema.js';
 
 export const PetSchema = new GraphQLObjectType({
   name: 'Pet',
